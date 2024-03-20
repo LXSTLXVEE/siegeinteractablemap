@@ -9,14 +9,32 @@
     <!-- Custom CSS -->
     <style>
         #map {
-            height: 800px; /* Adjust the height as needed */
-            width: auto;
+            height: 600px;
+            width: 100%;
+        }
+        .button-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .button-container button {
+            margin: 5px;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
 
 <div id="map"></div>
+
+<div class="button-container">
+    <button id="button1" onclick="placeMarker('button1')">Button 1</button>
+    <button id="button2" onclick="placeMarker('button2')">Button 2</button>
+    <!-- Add more buttons as needed -->
+</div>
 
 <!-- Leaflet JavaScript -->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -31,7 +49,7 @@
     var bounds = [[0, 0], [800, 1100]]; // Adjust these values based on the image dimensions
 
     // Define the image URL and size
-    var imageUrl = 'r6-maps-bank-blueprint-3.webp'; // Provide the correct path to your image
+    var imageUrl = 'bank-blueprint-1.jpg'; // Provide the correct path to your image
     var imageSize = [1100, 800]; // Adjust the image size based on the image dimensions
 
     // Add the image overlay to the map
@@ -40,17 +58,27 @@
     // Set the map view to fit the image bounds
     map.fitBounds(bounds);
 
-    // Add click event listener to the map
-    map.on('click', function(e) {
-        // Get coordinates of the clicked location
-        var lat = e.latlng.lat;
-        var lng = e.latlng.lng;
+    // Function to place a marker at a specific location
+    function placeMarker(buttonId) {
+        // Get the corresponding coordinates based on the button ID
+        var coordinates;
+        switch(buttonId) {
+            case 'button1':
+                coordinates = [100, 100]; // Example coordinates, adjust as needed
+                break;
+            case 'button2':
+                coordinates = [200, 200]; // Example coordinates, adjust as needed
+                break;
+            // Add more cases for additional buttons
+            default:
+                coordinates = [0, 0];
+        }
 
-        // Display a marker at the clicked location
-        L.marker([lat, lng]).addTo(map)
-            .bindPopup('You clicked here!')
+        // Display a marker at the specified coordinates
+        L.marker(coordinates).addTo(map)
+            .bindPopup('Marker placed by Button ' + buttonId)
             .openPopup();
-    });
+    }
 </script>
 
 </body>

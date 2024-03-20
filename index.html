@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Map</title>
+    <title>Interactive Siege Map</title>
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <!-- Custom CSS -->
     <style>
         #map {
-            height: 600px;
+            height: 800px; /* Adjust the height as needed */
+            width: auto;
         }
     </style>
 </head>
@@ -22,12 +23,22 @@
 <!-- Custom JavaScript -->
 <script>
     // Initialize the map
-    var map = L.map('map').setView([51.505, -0.09], 13);
+    var map = L.map('map', {
+        crs: L.CRS.Simple // Use simple CRS (Coordinate Reference System)
+    });
 
-    // Add tile layer (OpenStreetMap)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+    // Define the bounds of the image
+    var bounds = [[0, 0], [800, 1100]]; // Adjust these values based on the image dimensions
+
+    // Define the image URL and size
+    var imageUrl = 'r6-maps-bank-blueprint-3.webp'; // Provide the correct path to your image
+    var imageSize = [1100, 800]; // Adjust the image size based on the image dimensions
+
+    // Add the image overlay to the map
+    L.imageOverlay(imageUrl, bounds).addTo(map);
+
+    // Set the map view to fit the image bounds
+    map.fitBounds(bounds);
 
     // Add click event listener to the map
     map.on('click', function(e) {

@@ -3,82 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Siege Map</title>
+    <title>Interactive Siege Map Selector</title>
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <!-- Custom CSS -->
     <style>
+        #map-container {
+            position: relative;
+        }
+
         #map {
             height: 600px;
             width: 100%;
         }
-        .button-container {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .button-container button {
-            margin: 5px;
+
+        #map-selector {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.8);
             padding: 10px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .map-selector-button {
+            margin: 0 10px;
             cursor: pointer;
+        }
+
+        .map-selector-button img {
+            width: 100px;
+            height: auto;
         }
     </style>
 </head>
 <body>
 
-<div id="map"></div>
-
-<div class="button-container">
-    <button id="button1" onclick="placeMarker('button1')">Button 1</button>
-    <button id="button2" onclick="placeMarker('button2')">Button 2</button>
-    <!-- Add more buttons as needed -->
+<div id="map-container">
+    <div id="map"></div>
+    <div id="map-selector">
+        <button class="map-selector-button" onclick="changeMap('bank')">Bank</button>
+        <button class="map-selector-button" onclick="changeMap('other')">Other Map</button>
+        <!-- Add more buttons for other maps as needed -->
+    </div>
 </div>
 
 <!-- Leaflet JavaScript -->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <!-- Custom JavaScript -->
 <script>
-    // Initialize the map
-    var map = L.map('map', {
-        crs: L.CRS.Simple // Use simple CRS (Coordinate Reference System)
-    });
+    var map;
+    var imageUrl;
+    var bounds;
 
-    // Define the bounds of the image
-    var bounds = [[0, 0], [800, 1100]]; // Adjust these values based on the image dimensions
+    function initializeMap(mapName) {
+        map = L.map('map', {
+            crs: L.CRS.Simple
+        });
 
-    // Define the image URL and size
-    var imageUrl = 'bank-blueprint-1.jpg'; // Provide the correct path to your image
-    var imageSize = [1100, 800]; // Adjust the image size based on the image dimensions
-
-    // Add the image overlay to the map
-    L.imageOverlay(imageUrl, bounds).addTo(map);
-
-    // Set the map view to fit the image bounds
-    map.fitBounds(bounds);
-
-    // Function to place a marker at a specific location
-    function placeMarker(buttonId) {
-        // Get the corresponding coordinates based on the button ID
-        var coordinates;
-        switch(buttonId) {
-            case 'button1':
-                coordinates = [100, 100]; // Example coordinates, adjust as needed
-                break;
-            case 'button2':
-                coordinates = [200, 200]; // Example coordinates, adjust as needed
-                break;
-            // Add more cases for additional buttons
-            default:
-                coordinates = [0, 0];
+        if (mapName === 'bank') {
+            imageUrl = 'bank-blueprint-1.jpg';
+            bounds = [[0, 0], [800, 1100]];
+        } else if (mapName === 'other') {
+            imageUrl = 'other-map-image.jpg';
+            bounds = [[0, 0], [/* Other map image dimensions */]];
         }
 
-        // Display a marker at the specified coordinates
-        L.marker(coordinates).addTo(map)
-            .bindPopup('Marker placed by Button ' + buttonId)
-            .openPopup();
+        L.imageOverlay(imageUrl, bounds).addTo(map);
+        map.fitBounds(bounds);
+
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lng = e.latlng.lng;
+
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup('You clicked here!')
+                .openPopup();
+        });
     }
+
+    function changeMap(mapName) {
+        if (map) {
+            map.remove();
+        }
+        initializeMap(mapName);
+    }
+
+    // Initialize with the default map
+    initializeMap('bank');
 </script>
 
 </body>
